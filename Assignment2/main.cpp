@@ -1,9 +1,10 @@
-#include <iostream>
-#include <cstdint>
-#include <windows.h>
-#include "Timer.hpp"
 #include "Memory.hpp"
 #include "PoolAllocator.hpp"
+#include <chrono>
+#include <cstdint>
+#include <iostream>
+#include <vector>
+#include <windows.h>
 
 
 struct Object{
@@ -24,18 +25,17 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		std::cout << "Running test with OS allocator\n";
 
 		std::vector<void*> pointers;
-		pointers.reverse(objectCount);
 
 		for(int i = 0; i < objectCount; i++){
 			void* ptr = nullptr;
-			ptr = malloc(sizeof(Object))
+			ptr = malloc(sizeof(Object));
 			pointers.push_back(ptr);
 		}
 		for(void* ptr : pointers){
 			delete ptr;
 		}
 	}
-	else if(mode == AllocMode.Pool){
+	else if(mode == AllocMode::Pool){
 
 	}
 	
@@ -53,7 +53,7 @@ int main()
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
-    std::cout << "  Pool allocator time: " << poolTime << " ms\n";
+    //std::cout << "  Pool allocator time: " << poolTime << " ms\n";
 
     return 0;
 }
