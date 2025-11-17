@@ -1,11 +1,17 @@
 #include <iostream>
+#include <cstdint>
 #include <windows.h>
 #include "Memory.hpp"
 #include "PoolAllocator.hpp"
 
+
+struct Object{
+	std::uint8_t data[32];
+};
+
 int main()
 {
-	std::cout << "Hello World!" << std::endl;
+	PoolAllocator pool(sizeof(Object), 100);
 	while (true)
 	{
 

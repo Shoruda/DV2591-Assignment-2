@@ -3,7 +3,7 @@
 class PoolAllocator
 {
 public:
-    PoolAllocator(size_t objectSize, size_t objectCount, size_t alignment);
+    PoolAllocator(size_t objectSize, size_t objectCount); //, size_t alignment?
     ~PoolAllocator();
 
     void* Allocate();
