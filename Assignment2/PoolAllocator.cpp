@@ -1,5 +1,10 @@
 #include <iostream>
+#include "PoolAllocator.hpp"
 
-int PoolAllocator(){
-    std::cout << "We do pooling" << std::endl;
-} 
+PoolAllocator::PoolAllocator(){
+
+}
+
+PoolAllocator::~PoolAllocator(){
+    
+}

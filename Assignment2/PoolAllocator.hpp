@@ -1,5 +1,10 @@
 #pragma once
 
-#include "PoolAllocator.cpp"
+class PoolAllocator
+{
+public:
+    PoolAllocator();
+    ~PoolAllocator();
+private:
 
-int PoolAllocator();
+}
