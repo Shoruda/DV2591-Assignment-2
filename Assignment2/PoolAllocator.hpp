@@ -7,4 +7,4 @@ public:
     ~PoolAllocator();
 private:
 
-}
+};
