@@ -3,8 +3,11 @@
 class PoolAllocator
 {
 public:
-    PoolAllocator();
+    PoolAllocator(size_t objectSize, size_t objectCount, size_t alignment);
     ~PoolAllocator();
+
+    void* Allocate();
+    void Free(void* ptr);
 private:
 
 }
