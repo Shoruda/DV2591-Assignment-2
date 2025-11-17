@@ -29,6 +29,10 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			for (int j = 0; j < 10; j++)
 			{
 				ptrs[j] = malloc(sizeof(Object));
+				if (!ptrs[j]) {
+					std::cout << "Out of memory!\n";
+					break;
+				}
 				Object obj;
 				obj.data[0] = 69;
 				memcpy(ptrs[j], &obj, sizeof(Object));
