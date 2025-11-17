@@ -23,19 +23,41 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	if(mode == AllocMode::OS){
 		std::cout << "Running test with OS allocator\n";
 
-		std::vector<void*> pointers;
-
-		for(int i = 0; i < objectCount; i++){
-			void* ptr = nullptr;
-			ptr = malloc(sizeof(Object));
-			pointers.push_back(ptr);
-		}
-		for(void* ptr : pointers){
-			delete ptr;
+		for(int i = 0; i < objectCount; i+=10)
+		{
+			std::vector<void*> pointers;
+			for (int j = 0; j < 10; j++)
+			{
+				void* ptr = nullptr;
+				ptr = malloc(sizeof(Object));
+				pointers.push_back(ptr);
+			}
+			for (void* ptr : pointers) {
+				free(ptr);
+			}
 		}
 	}
-	else if(mode == AllocMode::Pool){
+	else if (mode == AllocMode::Pool) {
+		std::cout << "Running test with Pool allocator\n";
 
+		PoolAllocator Pool(sizeof(Object), 20);
+
+		for (int i = 0; i < objectCount; i+=10) 
+		{
+			std::vector<void*> pointers;
+			for (int j = 0; j < 10; j++)
+			{
+				void* raw = Pool.Allocate();
+				if (!raw) {
+					std::cout << "Pool exhausted!\n";
+					break;
+				}
+				pointers.push_back(raw);
+			}
+			for (void* ptr : pointers) {
+				Pool.Free(ptr);
+			}
+		}
 	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
@@ -46,14 +68,14 @@ double runTestAllocation(AllocMode mode, int objectCount){
 
 int main()
 {
-	const int objectCount = 10000;
+	const int objectCount = 100000;
 
 	double osTime = runTestAllocation(AllocMode::OS, objectCount);
-	//double poolTime = runTestAllocation(AllocMode::Pool, object);
+	double poolTime = runTestAllocation(AllocMode::Pool, objectCount);
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
-    //std::cout << "  Pool allocator time: " << poolTime << " ms\n";
+    std::cout << "  Pool allocator time: " << poolTime << " ms\n";
 
     return 0;
 }
