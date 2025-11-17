@@ -16,24 +16,32 @@ enum class AllocMode{
 }
 
 double runTestAllocation(AllocMode mode, int objectCount){
- 	std::cout << "Running test with " 
-		<< (mode == AllocMode::OS ? "OS allocator" : "Pool allocator") 
-		<< " (" << objectCount << " objects)...\n";
-
-	static PoolAllocator pool(sizeof(Object), 100000);
-
-	std::vector<void*> pointers;
-	pointers.reverse(objectCount);
 
 	Timer timer;
 	timer.start();
 
 	if(mode == AllocMode::OS){
-		for(int i = 0; i < objectCount; i++)
+		std::cout << "Running test with OS allocator\n";
+
+		std::vector<void*> pointers;
+		pointers.reverse(objectCount);
+
+		for(int i = 0; i < objectCount; i++){
+			void* ptr = nullptr;
+			ptr = malloc(sizeof(Object))
+			pointers.push_back(ptr);
+		}
+		for(void* ptr : pointers){
+			delete ptr;
+		}
 	}
 	else if(mode == AllocMode.Pool){
-		
+
 	}
+	
+	double ms = timer.elapsedMilliseconds();
+    std::cout << "Test finished in " << ms << " ms\n\n";
+    return ms;
 }
 
 int main()
