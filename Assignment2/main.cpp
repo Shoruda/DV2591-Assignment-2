@@ -23,39 +23,37 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	if(mode == AllocMode::OS){
 		std::cout << "Running test with OS allocator\n";
 
-		for(int i = 0; i < objectCount; i+=10)
-		{
-			std::vector<void*> pointers;
-			for (int j = 0; j < 10; j++)
+		if (mode == AllocMode::OS) {
+			std::cout << "Running test with OS allocator\n";
+			for (int i = 0; i < objectCount; i += 10)
 			{
-				void* ptr = nullptr;
-				ptr = malloc(sizeof(Object));
-				pointers.push_back(ptr);
-			}
-			for (void* ptr : pointers) {
-				free(ptr);
+				void* ptrs[10];
+				for (int j = 0; j < 10; j++)
+				{
+					ptrs[j] = malloc(sizeof(Object));
+				}
+				for (int j = 0; j < 10; j++) {
+					free(ptrs[j]);
+				}
 			}
 		}
 	}
 	else if (mode == AllocMode::Pool) {
 		std::cout << "Running test with Pool allocator\n";
-
 		PoolAllocator Pool(sizeof(Object), 20);
-
-		for (int i = 0; i < objectCount; i+=10) 
+		for (int i = 0; i < objectCount; i += 10)
 		{
-			std::vector<void*> pointers;
+			void* ptrs[10];
 			for (int j = 0; j < 10; j++)
 			{
-				void* raw = Pool.Allocate();
-				if (!raw) {
+				ptrs[j] = Pool.Allocate();
+				if (!ptrs[j]) {
 					std::cout << "Pool exhausted!\n";
 					break;
 				}
-				pointers.push_back(raw);
 			}
-			for (void* ptr : pointers) {
-				Pool.Free(ptr);
+			for (int j = 0; j < 10; j++) {
+				Pool.Free(ptrs[j]);
 			}
 		}
 	}
@@ -68,7 +66,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 
 int main()
 {
-	const int objectCount = 100000;
+	const int objectCount = 10000000;
 
 	double osTime = runTestAllocation(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation(AllocMode::Pool, objectCount);
