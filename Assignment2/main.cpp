@@ -31,10 +31,13 @@ double runTestAllocation(AllocMode mode, int objectCount){
 				for (int j = 0; j < 10; j++)
 				{
 					ptrs[j] = malloc(sizeof(Object));
+					Object obj;
+					obj.data[0] = 69;
+					memcpy(ptrs[j], &obj, sizeof(Object));
 				}
 				for (int j = 0; j < 10; j++) {
 					free(ptrs[j]);
-				}
+				}		
 			}
 		}
 	}
@@ -51,6 +54,9 @@ double runTestAllocation(AllocMode mode, int objectCount){
 					std::cout << "Pool exhausted!\n";
 					break;
 				}
+				Object obj;
+				obj.data[0] = 69;
+				memcpy(ptrs[j], &obj, sizeof(Object));
 			}
 			for (int j = 0; j < 10; j++) {
 				Pool.Free(ptrs[j]);
