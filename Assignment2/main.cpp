@@ -30,6 +30,13 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			{
 				void* ptr = nullptr;
 				ptr = malloc(sizeof(Object));
+				if (!ptr) {
+					std::cout << "Out of memory!\n";
+					break;
+				}
+				Object obj;
+				obj.data[0] = 69;
+				memcpy(ptr, &obj, sizeof(Object));
 				pointers.push_back(ptr);
 			}
 			for (void* ptr : pointers) {
@@ -47,12 +54,15 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			std::vector<void*> pointers;
 			for (int j = 0; j < 10; j++)
 			{
-				void* raw = Pool.Allocate();
-				if (!raw) {
+				void* ptr = Pool.Allocate();
+				if (!ptr) {
 					std::cout << "Pool exhausted!\n";
 					break;
 				}
-				pointers.push_back(raw);
+				Object obj;
+				obj.data[0] = 69;
+				memcpy(ptr, &obj, sizeof(Object));
+				pointers.push_back(ptr);
 			}
 			for (void* ptr : pointers) {
 				Pool.Free(ptr);
