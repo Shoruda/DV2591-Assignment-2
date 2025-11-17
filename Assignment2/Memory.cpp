@@ -16,7 +16,14 @@ void* CustomAlloc(size_t size, bool custom)
 	}
 }
 
-void  CustomFree(void* ptr) 
+void  CustomFree(void* ptr, bool custom) 
 { 
-	
+	if (custom)
+	{
+		//do stuff :)
+	}
+	else
+	{
+		free(ptr);
+	}
 }
