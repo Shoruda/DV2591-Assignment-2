@@ -3,18 +3,18 @@
 #include "StackAllocator.hpp"
 #include <iostream>
 
-void* CustomAlloc(size_t size, bool custom) 
+void* CustomAlloc(size_t size, size_t objectCount, bool custom) 
 { 
 	if (custom)
 	{
 		//do stuff :)
 		return 0;
 	}
-	else
-	{
-		std::cout << "OS memory chom" << std::endl;
-		return malloc(size);
-	}
+		
+	std::cout << "OS memory chom" << std::endl;
+	return ::operator new(size);
+	
+
 }
 
 void  CustomFree(void* ptr, bool custom) 
