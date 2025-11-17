@@ -7,12 +7,12 @@ void* CustomAlloc(size_t size, bool custom)
 { 
 	if (custom)
 	{
-		return malloc(size);
+		//do stuff :)
+		return 0;
 	}
 	else
 	{
-		//do stuff :)
-		return 0;
+		return malloc(size);
 	}
 }
 
