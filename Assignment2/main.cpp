@@ -11,7 +11,7 @@ struct Object{
 int main()
 {
 	//PoolAllocator pool(sizeof(Object), 100);
-	CustomAlloc(sizeof(Object));
+	CustomAlloc(sizeof(Object), false);
 	while (true)
 	{
 

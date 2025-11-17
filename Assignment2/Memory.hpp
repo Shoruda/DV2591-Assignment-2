@@ -2,5 +2,5 @@
 
 #include <cstddef>
 
-void* CustomAlloc(size_t size);
-void  CustomFree(void* ptr);
+void* CustomAlloc(size_t size, bool custom);
+void  CustomFree(void* ptr, bool custom);

@@ -9,5 +9,8 @@ public:
     void* Allocate();
     void Free(void* ptr);
 private:
-
+    size_t objectSize;
+    size_t objectCount;
+    void* memoryBlock;
+    void* freeListHead;
 };
