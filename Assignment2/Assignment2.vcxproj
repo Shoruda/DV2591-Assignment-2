@@ -128,6 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="PoolAllocator.cpp" />
+    <ClCompile Include="StackAllocator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Memory.hpp" />
+    <ClInclude Include="PoolAllocator.hpp" />
+    <ClInclude Include="StackAllocator.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
