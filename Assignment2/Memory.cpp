@@ -11,6 +11,7 @@ void* CustomAlloc(size_t size, bool custom)
 	}
 	else
 	{
+		//do stuff :)
 		return 0;
 	}
 }
