@@ -20,28 +20,26 @@ double runTestAllocation(AllocMode mode, int objectCount){
 
 	auto start = std::chrono::high_resolution_clock::now();
 
-	if(mode == AllocMode::OS){
+	if (mode == AllocMode::OS) 
+	{
 		std::cout << "Running test with OS allocator\n";
-
-		if (mode == AllocMode::OS) {
-			std::cout << "Running test with OS allocator\n";
-			for (int i = 0; i < objectCount; i += 10)
+		for (int i = 0; i < objectCount; i += 10)
+		{
+			void* ptrs[10];
+			for (int j = 0; j < 10; j++)
 			{
-				void* ptrs[10];
-				for (int j = 0; j < 10; j++)
-				{
-					ptrs[j] = malloc(sizeof(Object));
-					Object obj;
-					obj.data[0] = 69;
-					memcpy(ptrs[j], &obj, sizeof(Object));
-				}
-				for (int j = 0; j < 10; j++) {
-					free(ptrs[j]);
-				}		
+				ptrs[j] = malloc(sizeof(Object));
+				Object obj;
+				obj.data[0] = 69;
+				memcpy(ptrs[j], &obj, sizeof(Object));
 			}
+			for (int j = 0; j < 10; j++) {
+				free(ptrs[j]);
+			}		
 		}
 	}
-	else if (mode == AllocMode::Pool) {
+	else if (mode == AllocMode::Pool) 
+	{
 		std::cout << "Running test with Pool allocator\n";
 		PoolAllocator Pool(sizeof(Object), 20);
 		for (int i = 0; i < objectCount; i += 10)
