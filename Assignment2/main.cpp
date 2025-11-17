@@ -11,15 +11,14 @@ struct Object{
 	std::uint8_t data[32];
 };
 
-enum class AllocMode{
+enum class AllocMode {
 	OS,
 	Pool
-}
+};
 
 double runTestAllocation(AllocMode mode, int objectCount){
 
-	Timer timer;
-	timer.start();
+	auto start = std::chrono::high_resolution_clock::now();
 
 	if(mode == AllocMode::OS){
 		std::cout << "Running test with OS allocator\n";
@@ -39,9 +38,10 @@ double runTestAllocation(AllocMode mode, int objectCount){
 
 	}
 	
-	double ms = timer.elapsedMilliseconds();
-    std::cout << "Test finished in " << ms << " ms\n\n";
-    return ms;
+	auto end = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "Test finished in " << duration.count() << " ms\n\n";
+    return duration.count();
 }
 
 int main()
