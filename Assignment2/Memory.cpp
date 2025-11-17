@@ -12,6 +12,7 @@ void* CustomAlloc(size_t size, bool custom)
 	}
 	else
 	{
+		std::cout << "OS memory chom" << std::endl;
 		return malloc(size);
 	}
 }

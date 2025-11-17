@@ -4,14 +4,14 @@
 #include "Memory.hpp"
 #include "PoolAllocator.hpp"
 
-
 struct Object{
 	std::uint8_t data[32];
 };
 
 int main()
 {
-	PoolAllocator pool(sizeof(Object), 100);
+	//PoolAllocator pool(sizeof(Object), 100);
+	CustomAlloc(sizeof(Object));
 	while (true)
 	{
 
