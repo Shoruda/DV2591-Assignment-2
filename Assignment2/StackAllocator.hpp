@@ -6,7 +6,7 @@ public:
     StackAllocator(size_t capacity);
     ~StackAllocator();
 
-    void* Allocate(size_t size, size_t alignment = alignof(std::max_align_t));
+    void* Allocate(size_t size, size_t alignment = alignof(::max_align_t));
     void Reset();
 
 private:

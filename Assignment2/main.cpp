@@ -4,12 +4,20 @@
 #include "BuddyAllocator.hpp"
 #include <chrono>
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <vector>
 
 
-struct Object{
+
+struct Object1{
 	std::uint8_t data[32];
+};
+struct Object2{
+	std::uint8_t data[128];
+};
+struct Object3{
+	std::uint8_t data[512];
 };
 
 enum class AllocMode {
@@ -31,14 +39,14 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			void* ptrs[10];
 			for (int j = 0; j < 10; j++)
 			{
-				ptrs[j] = malloc(sizeof(Object));
+				ptrs[j] = malloc(sizeof(Object1));
 				if (!ptrs[j]) {
 					std::cout << "Out of memory!\n";
 					break;
 				}
-				Object obj;
+				Object1 obj;
 				obj.data[0] = 69;
-				memcpy(ptrs[j], &obj, sizeof(Object));
+				std::memcpy(ptrs[j], &obj, sizeof(Object1));
 			}
 			for (int j = 0; j < 10; j++) {
 				free(ptrs[j]);
@@ -49,7 +57,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Pool) 
 	{
 		std::cout << "Running test with Pool allocator\n";
-		PoolAllocator Pool(sizeof(Object), 20, 16);
+		PoolAllocator Pool(sizeof(Object1), 20, 16);
 		for (int i = 0; i < objectCount; i += 10)
 		{
 			void* ptrs[10];
@@ -60,9 +68,9 @@ double runTestAllocation(AllocMode mode, int objectCount){
 					std::cout << "Pool exhausted!\n";
 					break;
 				}
-				Object obj;
+				Object1 obj;
 				obj.data[0] = 69;
-				memcpy(ptrs[j], &obj, sizeof(Object));
+				std::memcpy(ptrs[j], &obj, sizeof(Object1));
 			}
 			for (int j = 0; j < 10; j++) {
 				Pool.Free(ptrs[j]);
@@ -75,7 +83,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		std::cout << "Running test with Stack allocator\n";
 		const int frames = 10;
 		const int allocsPerFrame = objectCount / frames;
-		const size_t capacity = sizeof(Object) * allocsPerFrame;
+		const size_t capacity = sizeof(Object1) * allocsPerFrame;
 
 		StackAllocator stack(capacity);
 
@@ -83,15 +91,14 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			stack.Reset();
 
 			for(int j = 0; j > allocsPerFrame; j++){
-				void* mem = stack.Allocate(sizeof(Object), alignof(Object));
+				void* mem = stack.Allocate(sizeof(Object1), alignof(Object1));
 				if(!mem)
 					break;
 				
-				auto* obj = new(mem) Object;
-				obj->data[0] = 40; //FÖRTTY
+				auto* obj = new(mem) Object1;
+				obj->data[0] = 40;
 			}
 		}
-
 	}
 
 	else if (mode == AllocMode::Buddy)
