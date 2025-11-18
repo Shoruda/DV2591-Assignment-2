@@ -90,7 +90,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		for(int i = 0; i < frames; i++){
 			stack.Reset();
 
-			for(int j = 0; j > allocsPerFrame; j++){
+			for(int j = 0; j < allocsPerFrame; j++){
 				void* mem = stack.Allocate(sizeof(Object1), alignof(Object1));
 				if(!mem)
 					break;
