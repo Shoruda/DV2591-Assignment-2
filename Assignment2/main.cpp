@@ -45,7 +45,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Pool) 
 	{
 		std::cout << "Running test with Pool allocator\n";
-		PoolAllocator Pool(sizeof(Object), 20);
+		PoolAllocator Pool(sizeof(Object), 20, 16);
 		for (int i = 0; i < objectCount; i += 10)
 		{
 			void* ptrs[10];
