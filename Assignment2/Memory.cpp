@@ -7,7 +7,7 @@ void* CustomAlloc(size_t size, size_t objectCount, bool custom)
 { 
 	if (custom)
 	{
-		//do stuff :)
+		//do stuff :) do magic !!!!
 		return 0;
 	}
 		
