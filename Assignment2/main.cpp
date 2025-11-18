@@ -13,7 +13,8 @@ struct Object{
 
 enum class AllocMode {
 	OS,
-	Pool
+	Pool,
+	Stack
 };
 
 double runTestAllocation(AllocMode mode, int objectCount){
@@ -65,6 +66,10 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			}
 		}
 	}
+	else if (mode == AllocMode::Stack) 
+	{
+
+	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -78,6 +83,7 @@ int main()
 
 	double osTime = runTestAllocation(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation(AllocMode::Pool, objectCount);
+	double stackTime = runTestAllocation(AllocMode::Stack, objectCount);
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
