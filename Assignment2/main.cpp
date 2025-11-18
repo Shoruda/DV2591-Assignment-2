@@ -1,5 +1,6 @@
 #include "Memory.hpp"
 #include "PoolAllocator.hpp"
+#include "StackAllocator.hpp"
 #include <chrono>
 #include <cstdint>
 #include <iostream>
@@ -70,6 +71,25 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	
 	else if (mode == AllocMode::Stack) 
 	{
+		std::cout << "Running test with Stack allocator\n";
+		const int frames = 10;
+		const int allocsPerFrame = objectCount / frames;
+		const size_t capacity = sizeof(Object) * allocsPerFrame;
+
+		StackAllocator stack(capacity);
+
+		for(int i = 0; i < frames; i++){
+			stack.Reset();
+
+			for(int j = 0; j > allocsPerFrame; j++){
+				void* mem = stack.Allocate(sizeof(Object), alignof(Object));
+				if(!mem)
+					break;
+				
+				auto* obj = new(mem) Object;
+				obj->data[0] = 40; //FÖRTTY
+			}
+		}
 
 	}
 	
