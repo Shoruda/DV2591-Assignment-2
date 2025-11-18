@@ -3,8 +3,10 @@
 #include "StackAllocator.hpp"
 #include <chrono>
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <vector>
+
 
 
 struct Object1{
@@ -42,7 +44,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 				}
 				Object1 obj;
 				obj.data[0] = 69;
-				memcpy(ptrs[j], &obj, sizeof(Object1));
+				std::memcpy(ptrs[j], &obj, sizeof(Object1));
 			}
 			for (int j = 0; j < 10; j++) {
 				free(ptrs[j]);
@@ -66,7 +68,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 				}
 				Object1 obj;
 				obj.data[0] = 69;
-				memcpy(ptrs[j], &obj, sizeof(Object1));
+				std::memcpy(ptrs[j], &obj, sizeof(Object1));
 			}
 			for (int j = 0; j < 10; j++) {
 				Pool.Free(ptrs[j]);
