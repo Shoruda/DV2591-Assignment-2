@@ -1,6 +1,7 @@
 #include "Memory.hpp"
 #include "PoolAllocator.hpp"
 #include "StackAllocator.hpp"
+#include "BuddyAllocator.hpp"
 #include <chrono>
 #include <cstdint>
 #include <iostream>
@@ -14,7 +15,8 @@ struct Object{
 enum class AllocMode {
 	OS,
 	Pool,
-	Stack
+	Stack,
+	Buddy
 };
 
 double runTestAllocation(AllocMode mode, int objectCount){
@@ -90,6 +92,12 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			}
 		}
 
+	}
+
+	else if (mode == AllocMode::Buddy)
+	{
+		std::cout << "Running test with Buddy allocator\n";
+		//code
 	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
