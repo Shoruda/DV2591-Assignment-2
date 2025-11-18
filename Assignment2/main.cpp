@@ -104,7 +104,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Buddy)
 	{
 		std::cout << "Running test with Buddy allocator\n";
-		//code
+		BuddyAllocator buddy(32, 64);
 	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
@@ -117,14 +117,16 @@ int main()
 {
 	const int objectCount = 10000000;
 
-	double osTime = runTestAllocation(AllocMode::OS, objectCount);
+	runTestAllocation(AllocMode::Buddy, objectCount);
+
+	/*double osTime = runTestAllocation(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation(AllocMode::Stack, objectCount);
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
     std::cout << "  Pool allocator time: " << poolTime << " ms\n";
-	std::cout << "  Stack allocator time: " << stackTime << " ms\n";
+	std::cout << "  Stack allocator time: " << stackTime << " ms\n";*/
 
     return 0;
 }

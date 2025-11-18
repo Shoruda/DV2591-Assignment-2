@@ -127,12 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BuddyAllocator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="PoolAllocator.cpp" />
     <ClCompile Include="StackAllocator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuddyAllocator.hpp" />
     <ClInclude Include="Memory.hpp" />
     <ClInclude Include="PoolAllocator.hpp" />
     <ClInclude Include="StackAllocator.hpp" />
