@@ -234,3 +234,18 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
+
+# Build artifacts
+main
+main.exe
+a.out
+*.o
+*.obj
+*.out
+
+# VSCode
+.vscode/
+
+# CMake / Make (if you ever use them)
+build/
+cmake-build-*/
