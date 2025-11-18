@@ -38,3 +38,8 @@ void* StackAllocator::Allocate(size_t size, size_t alignment)
 
     return ptr;
 }
+
+void StackAllocator::Reset()
+{
+    m_offset = 0;
+}

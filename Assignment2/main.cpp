@@ -43,6 +43,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			}		
 		}
 	}
+	
 	else if (mode == AllocMode::Pool) 
 	{
 		std::cout << "Running test with Pool allocator\n";
@@ -66,6 +67,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			}
 		}
 	}
+	
 	else if (mode == AllocMode::Stack) 
 	{
 
@@ -88,6 +90,7 @@ int main()
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
     std::cout << "  Pool allocator time: " << poolTime << " ms\n";
+	std::cout << "  Stack allocator time: " << stackTime << " ms\n";
 
     return 0;
 }
