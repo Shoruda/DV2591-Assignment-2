@@ -1,6 +1,14 @@
 #pragma once
-
 #include <cstddef>
 
-void* CustomAlloc(size_t size, bool custom);
-void  CustomFree(void* ptr, bool custom);
+void InitPool(size_t poolObjectSize, size_t poolObjectCount, size_t poolAlignment);
+void InitStack(size_t stackSize);
+
+void ShutdownMemory();
+
+void* PoolAlloc();
+void  PoolFree(void* ptr);
+
+void* StackAlloc(size_t size, size_t alignment = 16);
+void  StackReset();
+
