@@ -59,13 +59,13 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Pool) 
 	{
 		std::cout << "Running test with Pool allocator\n";
-		PoolAllocator Pool(sizeof(T), 20, 16);
+		InitPool(sizeof(T), 20, 16);
 		for (int i = 0; i < objectCount; i += 10)
 		{
 			void* ptrs[10];
 			for (int j = 0; j < 10; j++)
 			{
-				ptrs[j] = Pool.Allocate();
+				ptrs[j] = PoolAlloc();
 				if (!ptrs[j]) {
 					std::cout << "Pool exhausted!\n";
 					break;
@@ -75,7 +75,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 				std::memcpy(ptrs[j], &obj, sizeof(T));
 			}
 			for (int j = 0; j < 10; j++) {
-				Pool.Free(ptrs[j]);
+				PoolFree(ptrs[j]);
 			}
 		}
 	}
@@ -87,13 +87,13 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		const int allocsPerFrame = objectCount / frames;
 		const size_t capacity = sizeof(T) * allocsPerFrame;
 
-		StackAllocator stack(capacity);
+		InitStack(capacity);
 
 		for(int i = 0; i < frames; i++){
-			stack.Reset();
+			StackReset();
 
 			for(int j = 0; j < allocsPerFrame; j++){
-				void* mem = stack.Allocate(sizeof(T), alignof(T));
+				void* mem = StackAlloc(sizeof(T), alignof(T));
 				if(!mem)
 					break;
 				
