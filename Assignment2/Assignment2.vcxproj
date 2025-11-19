@@ -132,12 +132,14 @@
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="PoolAllocator.cpp" />
     <ClCompile Include="StackAllocator.cpp" />
+    <ClCompile Include="StompAllocator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BuddyAllocator.hpp" />
     <ClInclude Include="Memory.hpp" />
     <ClInclude Include="PoolAllocator.hpp" />
     <ClInclude Include="StackAllocator.hpp" />
+    <ClInclude Include="StompAllocator.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

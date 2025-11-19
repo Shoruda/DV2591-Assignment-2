@@ -2,11 +2,11 @@
 #include <iostream>
 #include <vector>
 
-class BuddyAllocator
+class StompAllocator
 {
 public:
-	BuddyAllocator(size_t minBlockSize, size_t totalSize);
-	~BuddyAllocator();
+	StompAllocator(size_t minBlockSize, size_t totalSize);
+	~StompAllocator();
 
 	void* allocate(size_t size);
 	void deallocate(void* ptr);
