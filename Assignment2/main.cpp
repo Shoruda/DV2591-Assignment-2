@@ -2,6 +2,7 @@
 #include "PoolAllocator.hpp"
 #include "StackAllocator.hpp"
 #include "BuddyAllocator.hpp"
+#include "StompAllocator.hpp"
 #include <chrono>
 #include <cstdint>
 #include <cstring>
@@ -114,6 +115,15 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		std::cout << "Running test with Stomp allocator\n";
 		//do magic
 		//futti - toe
+
+		StompAllocator stomp;
+		const int frames = 10;
+		
+
+		for (int i = 0; i < frames; i++)
+		{
+
+		}
 	}
 	
 	auto end = std::chrono::high_resolution_clock::now();

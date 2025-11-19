@@ -13,7 +13,7 @@ StompAllocator::~StompAllocator()
 {
 }
 
-void* StompAllocator::allocate(size_t size, size_t alignment)
+void* StompAllocator::allocate(size_t size)
 {
 
 	size_t required_pages = (size + m_pageSize - 1) / m_pageSize; //roof division
@@ -23,29 +23,34 @@ void* StompAllocator::allocate(size_t size, size_t alignment)
 	void* base = VirtualAlloc(nullptr, total_bytes, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 
 	DWORD oldprotect = 0;
-	void* guard = (char*)base + required_pages * m_pageSize; // allign the guard pointer to the end
-	if (!guard)
-	{
-		VirtualProtect(guard, m_pageSize, PAGE_NOACCESS, &oldprotect);
-	}
-	else
+	void* guard = (char*)base + required_pages *(1+ m_pageSize); // allign the guard pointer to the end
+	if (!VirtualProtect(guard, m_pageSize, PAGE_NOACCESS, &oldprotect))
 	{
 		std::cout << "ERROR: Stomp allocation : guard allocation" << std::endl;
 		return nullptr;
 	}
+
 
 	AllocationInfo* header = (AllocationInfo*)base;
 	header->baseAddress = base;
 	header->allocated_pages = total_pages;
 	header->requested_size = size;
 	
-	void* usePtr = (char*)base + sizeof(AllocationInfo);
+	char* usePtr = (char*)base + m_pageSize;
 	
 	return usePtr;
 }
 
 void StompAllocator::deallocate(void* ptr)
 {
-	auto header = (AllocationInfo*)((char*)ptr - sizeof(AllocationInfo));
-	VirtualFree(header->baseAddress, 0, MEM_RELEASE);
+	if (!ptr)
+	{
+		std::cout << "ERROR: stomp allocator: deallocate ptr not found";
+	}
+	else
+	{
+		auto header = (AllocationInfo*)((char*)ptr - sizeof(AllocationInfo));
+		VirtualFree(header->baseAddress, 0, MEM_RELEASE);
+	}
+	
 }

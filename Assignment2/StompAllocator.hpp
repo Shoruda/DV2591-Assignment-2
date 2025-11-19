@@ -10,7 +10,7 @@ public:
 	StompAllocator();
 	~StompAllocator();
 
-	void* allocate(size_t size, size_t alignment = alignof(std::max_align_t));
+	void* allocate(size_t size);
 	void deallocate(void* ptr);
 
 private:
