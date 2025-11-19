@@ -17,8 +17,10 @@ private:
 	void* m_basePtr;		//raw memory block
 
 	std::vector<std::vector<void*>> m_freeblocks;
+	std::vector<int> m_blocklevel;
 
 	int getLevelForSize(size_t size);
 	size_t getBlockSizeForLevel(size_t level);
 	void split(int level);
+	void merge(int level, int offset);
 };

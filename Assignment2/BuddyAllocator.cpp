@@ -7,6 +7,7 @@ BuddyAllocator::BuddyAllocator(size_t minBlockSize, size_t totalSize)
 	int maxLevel = getLevelForSize(totalSize);
 	m_freeblocks.resize(maxLevel + 1);
 	m_freeblocks[maxLevel].push_back(m_basePtr);
+	m_blocklevel.resize(m_totalSize / m_minBlockSize);
 }
 
 BuddyAllocator::~BuddyAllocator()
@@ -28,6 +29,10 @@ void* BuddyAllocator::allocate(size_t size)
 	void* blkptr = m_freeblocks[level].back();
 	m_freeblocks[level].pop_back();
 
+	//add to list
+	size_t offset = (char*)blkptr - (char*)m_basePtr;
+	m_blocklevel[offset / m_minBlockSize] = level;
+
 	//Get the level needed for allocation size
 	//Run split
 	//Check if still empty (no memory left)
@@ -38,6 +43,9 @@ void* BuddyAllocator::allocate(size_t size)
 
 void BuddyAllocator::deallocate(void* ptr)
 {
+	size_t offset = (char*)ptr - (char*)m_basePtr;
+	int level = m_blocklevel[offset / m_minBlockSize];
+	merge(level, offset);
 }
 
 int BuddyAllocator::getLevelForSize(size_t size)
@@ -99,4 +107,9 @@ void BuddyAllocator::split(int level)
 	//recurssion on level + 1
 	//pop one parent block
 	//add 2 children blocks
+}
+
+void BuddyAllocator::merge(int level, int offset)
+{
+	void* buddyptr = (char*)m_basePtr + offset;
 }
