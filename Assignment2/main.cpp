@@ -109,7 +109,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		BuddyAllocator Buddy(32, 128);
 
 		void* ptr = Buddy.allocate(sizeof(Object1));
-		Object1 obj;
+		T obj;
 		obj.data[0] = 67;
 		std::memcpy(ptr, &obj, sizeof(Object1));
 
