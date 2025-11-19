@@ -9,7 +9,6 @@
 #include <vector>
 
 
-
 struct ObjectSmall{
 	std::uint8_t data[32];
 };
@@ -93,12 +92,13 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			stack.Reset();
 
 			for(int j = 0; j < allocsPerFrame; j++){
-				void* mem = stack.Allocate(sizeof(T), alignof(T));
-				if(!mem)
+				void* ptrs = stack.Allocate(sizeof(T), alignof(T));
+				if(!ptrs)
 					break;
 				
-				auto* obj = new(mem) T;
-				obj->data[0] = 40;
+				T obj;
+				obj.data[0] = 69;
+				std::memcpy(ptrs, &obj, sizeof(T));
 			}
 		}
 	}
