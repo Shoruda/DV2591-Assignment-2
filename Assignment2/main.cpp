@@ -108,24 +108,24 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		std::cout << "Running test with Buddy allocator\n";
 		BuddyAllocator Buddy(32, 128);
 
-		void* ptr = Buddy.allocate(sizeof(Object1));
+		void* ptr = Buddy.allocate(sizeof(T));
 		T obj;
 		obj.data[0] = 67;
-		std::memcpy(ptr, &obj, sizeof(Object1));
+		std::memcpy(ptr, &obj, sizeof(T));
 
 		/*for (int i = 0; i < objectCount; i += 10)
 		{
 			void* ptrs[10];
 			for (int j = 0; j < 10; j++)
 			{
-				ptrs[j] = Buddy.allocate(sizeof(Object1));
+				ptrs[j] = Buddy.allocate(sizeof(T));
 				if (!ptrs[j]) {
 					std::cout << "Block full!\n";
 					break;
 				}
-				Object1 obj;
+				T obj;
 				obj.data[0] = 69;
-				std::memcpy(ptrs[j], &obj, sizeof(Object1));
+				std::memcpy(ptrs[j], &obj, sizeof(T));
 			}
 			for (int j = 0; j < 10; j++) {
 				Buddy.deallocate(ptrs[j]);
