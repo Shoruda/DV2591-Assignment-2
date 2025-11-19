@@ -141,8 +141,6 @@ int main()
 {
 	const int objectCount = 10000000;
 
-	runTestAllocation(AllocMode::Buddy, objectCount);
-
 	double osTime = runTestAllocation(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation(AllocMode::Stack, objectCount);
