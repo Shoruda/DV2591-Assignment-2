@@ -143,14 +143,14 @@ int main()
 
 	runTestAllocation(AllocMode::Buddy, objectCount);
 
-	/*double osTime = runTestAllocation(AllocMode::OS, objectCount);
+	double osTime = runTestAllocation(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation(AllocMode::Stack, objectCount);
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
     std::cout << "  Pool allocator time: " << poolTime << " ms\n";
-	std::cout << "  Stack allocator time: " << stackTime << " ms\n";*/
+	std::cout << "  Stack allocator time: " << stackTime << " ms\n";
 
     return 0;
 }
