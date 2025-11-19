@@ -24,7 +24,8 @@ enum class AllocMode {
 	OS,
 	Pool,
 	Stack,
-	Buddy
+	Buddy,
+	Stomp
 };
 
 template <typename T>
@@ -106,6 +107,13 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	{
 		std::cout << "Running test with Buddy allocator\n";
 		//code
+	}
+
+	else if (mode == AllocMode::Stomp)
+	{
+		std::cout << "Running test with Stomp allocator\n";
+		//do magic
+		//futti - toe
 	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
