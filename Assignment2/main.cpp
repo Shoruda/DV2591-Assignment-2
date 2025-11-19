@@ -10,13 +10,13 @@
 
 
 
-struct Object1{
+struct ObjectSmall{
 	std::uint8_t data[32];
 };
-struct Object2{
+struct ObjectMedium{
 	std::uint8_t data[128];
 };
-struct Object3{
+struct ObjectBig{
 	std::uint8_t data[512];
 };
 
@@ -24,9 +24,11 @@ enum class AllocMode {
 	OS,
 	Pool,
 	Stack,
-	Buddy
+	Buddy,
+	Stomp
 };
 
+template <typename T>
 double runTestAllocation(AllocMode mode, int objectCount){
 
 	auto start = std::chrono::high_resolution_clock::now();
@@ -39,14 +41,14 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			void* ptrs[10];
 			for (int j = 0; j < 10; j++)
 			{
-				ptrs[j] = malloc(sizeof(Object1));
+				ptrs[j] = malloc(sizeof(T));
 				if (!ptrs[j]) {
 					std::cout << "Out of memory!\n";
 					break;
 				}
-				Object1 obj;
+				T obj;
 				obj.data[0] = 69;
-				std::memcpy(ptrs[j], &obj, sizeof(Object1));
+				std::memcpy(ptrs[j], &obj, sizeof(T));
 			}
 			for (int j = 0; j < 10; j++) {
 				free(ptrs[j]);
@@ -57,7 +59,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Pool) 
 	{
 		std::cout << "Running test with Pool allocator\n";
-		PoolAllocator Pool(sizeof(Object1), 20, 16);
+		PoolAllocator Pool(sizeof(T), 20, 16);
 		for (int i = 0; i < objectCount; i += 10)
 		{
 			void* ptrs[10];
@@ -68,9 +70,9 @@ double runTestAllocation(AllocMode mode, int objectCount){
 					std::cout << "Pool exhausted!\n";
 					break;
 				}
-				Object1 obj;
+				T obj;
 				obj.data[0] = 69;
-				std::memcpy(ptrs[j], &obj, sizeof(Object1));
+				std::memcpy(ptrs[j], &obj, sizeof(T));
 			}
 			for (int j = 0; j < 10; j++) {
 				Pool.Free(ptrs[j]);
@@ -83,19 +85,19 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		std::cout << "Running test with Stack allocator\n";
 		const int frames = 10;
 		const int allocsPerFrame = objectCount / frames;
-		const size_t capacity = sizeof(Object1) * allocsPerFrame;
+		const size_t capacity = sizeof(T) * allocsPerFrame;
 
 		StackAllocator stack(capacity);
 
 		for(int i = 0; i < frames; i++){
 			stack.Reset();
 
-			for(int j = 0; j > allocsPerFrame; j++){
-				void* mem = stack.Allocate(sizeof(Object1), alignof(Object1));
+			for(int j = 0; j < allocsPerFrame; j++){
+				void* mem = stack.Allocate(sizeof(T), alignof(T));
 				if(!mem)
 					break;
 				
-				auto* obj = new(mem) Object1;
+				auto* obj = new(mem) T;
 				obj->data[0] = 40;
 			}
 		}
@@ -130,6 +132,13 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			}
 		}*/
 	}
+
+	else if (mode == AllocMode::Stomp)
+	{
+		std::cout << "Running test with Stomp allocator\n";
+		//do magic
+		//futti - toe
+	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -141,9 +150,9 @@ int main()
 {
 	const int objectCount = 10000000;
 
-	double osTime = runTestAllocation(AllocMode::OS, objectCount);
-	double poolTime = runTestAllocation(AllocMode::Pool, objectCount);
-	double stackTime = runTestAllocation(AllocMode::Stack, objectCount);
+	double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
+	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
+	double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
