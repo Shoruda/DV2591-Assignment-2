@@ -8,8 +8,8 @@ public:
 	BuddyAllocator(size_t minBlockSize, size_t totalSize);
 	~BuddyAllocator();
 
-	void* allocate(size_t size);
-	void deallocate(void* ptr);
+	void* Allocate(size_t size);
+	void Deallocate(void* ptr);
 
 private:
 	size_t m_minBlockSize;	//Smallest allowed block
@@ -19,8 +19,8 @@ private:
 	std::vector<std::vector<void*>> m_freeblocks;
 	std::vector<int> m_blocklevel;
 
-	int getLevelForSize(size_t size);
-	size_t getBlockSizeForLevel(size_t level);
-	void split(int level);
-	void merge(int level, int offset);
+	int GetLevelForSize(size_t size);
+	size_t GetBlockSizeForLevel(size_t level);
+	void Split(int level);
+	void Merge(int level, int offset);
 };

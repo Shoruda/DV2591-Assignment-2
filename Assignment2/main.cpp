@@ -108,10 +108,11 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		std::cout << "Running test with Buddy allocator\n";
 		BuddyAllocator Buddy(32, 128);
 
-		void* ptr = Buddy.allocate(sizeof(T));
+		void* ptr = Buddy.Allocate(sizeof(T));
 		T obj;
 		obj.data[0] = 67;
 		std::memcpy(ptr, &obj, sizeof(T));
+		Buddy.Deallocate(ptr);
 
 		/*for (int i = 0; i < objectCount; i += 10)
 		{
@@ -150,7 +151,7 @@ int main()
 {
 	const int objectCount = 10000000;
 
-	runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
+	runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
 
 	/*double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
