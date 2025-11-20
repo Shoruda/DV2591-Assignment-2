@@ -72,7 +72,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 					break;
 				}
 				T obj;
-				obj.data[0] = 69;
+				obj.data[0] = 69; // futti plus sjunio
 				std::memcpy(ptrs[j], &obj, sizeof(T));
 			}
 			for (int j = 0; j < 10; j++) {
@@ -99,7 +99,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 					break;
 				
 				auto* obj = new(mem) T;
-				obj->data[0] = 40;
+				obj->data[0] = 40; // fjutti
 			}
 		}
 	}
@@ -116,14 +116,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		//do magic
 		//futti - toe
 
-		StompAllocator stomp;
-		const int frames = 10;
-		
 
-		for (int i = 0; i < frames; i++)
-		{
-
-		}
 	}
 	
 	auto end = std::chrono::high_resolution_clock::now();

@@ -65,3 +65,17 @@ void StompAllocator::deallocate(void* ptr)
 	}
 	
 }
+
+bool StompAllocator::accessViolation(void(*func)())
+{
+	_try{
+		func();
+	}
+	_except(GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION 
+			? EXCEPTION_EXECUTE_HANDLER 
+			: EXCEPTION_CONTINUE_SEARCH)
+	{
+		return true;
+	}
+	return false;
+}
