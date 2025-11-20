@@ -27,8 +27,10 @@ void ShutdownMemory()
 {
     delete g_pool;
     delete g_stack;
+    delete g_stomp;
     g_pool = nullptr;
     g_stack = nullptr;
+    g_stomp = nullptr;
 }
 
 void* PoolAlloc()

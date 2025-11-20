@@ -134,8 +134,26 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		std::cout << "Running test with Stomp allocator\n";
 		//do magic
 		//futti - toe
-
-
+		InitStomp();
+		for (int i = 0; i < objectCount; i+=10)
+		{
+			void* ptrs[10];
+			for (int j = 0; j < 10; j++)
+			{
+				ptrs[j] = StompAlloc(sizeof(T));
+				if (!ptrs[j]) {
+					std::cout << "ERROR: stomp exhausted!\n";
+					break;
+				}
+				T obj;
+				obj.data[0] = 69;
+				std::memcpy(ptrs[j], &obj, sizeof(T));
+			}
+			for (int j = 0; j < 10; j++)
+			{
+				StompDeAlloc(ptrs[j]);
+			}
+		}
 	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
@@ -148,16 +166,18 @@ int main()
 {
 	const int objectCount = 10000000;
 
-	double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
+	//double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
-	double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
+	//double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
+	double StompTime = runTestAllocation<ObjectSmall>(AllocMode::Stomp, objectCount);
 
     std::cout << "Summary:\n";
-    std::cout << "  OS allocator time:   " << osTime   << " ms\n";
+    //std::cout << "  OS allocator time:   " << osTime   << " ms\n";
     std::cout << "  Pool allocator time: " << poolTime << " ms\n";
 	std::cout << "  Stack allocator time: " << stackTime << " ms\n";
-	std::cout << "  Buddy allocator time: " << buddyTime << " ms\n";
+	//std::cout << "  Buddy allocator time: " << buddyTime << " ms\n";
+	std::cout << "  Stomp allocator time: " << StompTime << " ms\n";
 
     return 0;
 }
