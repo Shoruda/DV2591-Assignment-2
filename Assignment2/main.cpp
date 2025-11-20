@@ -166,17 +166,17 @@ int main()
 {
 	const int objectCount = 10000000;
 
-	//double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
+	double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
-	//double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
+	double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
 	double StompTime = runTestAllocation<ObjectSmall>(AllocMode::Stomp, objectCount);
 
     std::cout << "Summary:\n";
-    //std::cout << "  OS allocator time:   " << osTime   << " ms\n";
+    std::cout << "  OS allocator time:   " << osTime   << " ms\n";
     std::cout << "  Pool allocator time: " << poolTime << " ms\n";
 	std::cout << "  Stack allocator time: " << stackTime << " ms\n";
-	//std::cout << "  Buddy allocator time: " << buddyTime << " ms\n";
+	std::cout << "  Buddy allocator time: " << buddyTime << " ms\n";
 	std::cout << "  Stomp allocator time: " << StompTime << " ms\n";
 
     return 0;
