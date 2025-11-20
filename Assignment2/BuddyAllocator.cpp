@@ -4,9 +4,10 @@ BuddyAllocator::BuddyAllocator(size_t minBlockSize, size_t totalSize)
 	:m_minBlockSize(minBlockSize), m_totalSize(totalSize)
 {
 	m_basePtr = malloc(totalSize);
-	int maxLevel = getLevelForSize(totalSize);
+	int maxLevel = GetLevelForSize(totalSize);
 	m_freeblocks.resize(maxLevel + 1);
 	m_freeblocks[maxLevel].push_back(m_basePtr);
+	m_blocklevel.resize(m_totalSize / m_minBlockSize);
 }
 
 BuddyAllocator::~BuddyAllocator()
@@ -14,12 +15,12 @@ BuddyAllocator::~BuddyAllocator()
 	free(m_basePtr);
 }
 
-void* BuddyAllocator::allocate(size_t size)
+void* BuddyAllocator::Allocate(size_t size)
 {
 	if (size > m_totalSize) return nullptr;
 
-	int level = getLevelForSize(size);
-	split(level);
+	int level = GetLevelForSize(size);
+	Split(level);
 	if (m_freeblocks[level].empty())
 	{
 		//no more memory to give :(
@@ -27,6 +28,10 @@ void* BuddyAllocator::allocate(size_t size)
 	}
 	void* blkptr = m_freeblocks[level].back();
 	m_freeblocks[level].pop_back();
+
+	//add to list
+	size_t offset = (char*)blkptr - (char*)m_basePtr;
+	m_blocklevel[offset / m_minBlockSize] = level;
 
 	//Get the level needed for allocation size
 	//Run split
@@ -36,23 +41,26 @@ void* BuddyAllocator::allocate(size_t size)
 	return blkptr;
 }
 
-void BuddyAllocator::deallocate(void* ptr)
+void BuddyAllocator::Deallocate(void* ptr)
 {
+	size_t offset = (char*)ptr - (char*)m_basePtr;
+	int level = m_blocklevel[offset / m_minBlockSize];
+	Merge(level, offset);
 }
 
-int BuddyAllocator::getLevelForSize(size_t size)
+int BuddyAllocator::GetLevelForSize(size_t size)
 {
 	int level = 0;
-	int blocksize = getBlockSizeForLevel(level);
+	int blocksize = GetBlockSizeForLevel(level);
 	while (size > blocksize)
 	{
 		level += 1;
-		blocksize = getBlockSizeForLevel(level);
+		blocksize = GetBlockSizeForLevel(level);
 	}
 	return level;
 }
 
-size_t BuddyAllocator::getBlockSizeForLevel(size_t level)
+size_t BuddyAllocator::GetBlockSizeForLevel(size_t level)
 {
 	size_t size = m_minBlockSize;
 	for (int i = 0; i < level; i++)
@@ -62,7 +70,7 @@ size_t BuddyAllocator::getBlockSizeForLevel(size_t level)
 	return size;
 }
 
-void BuddyAllocator::split(int level)
+void BuddyAllocator::Split(int level)
 {
 	if (!m_freeblocks[level].empty())
 	{
@@ -76,7 +84,7 @@ void BuddyAllocator::split(int level)
 		return;
 	}
 
-	split(level + 1);
+	Split(level + 1);
 
 	if (m_freeblocks[level + 1].empty())
 	{
@@ -86,7 +94,7 @@ void BuddyAllocator::split(int level)
 
 	void* parentBlk = m_freeblocks[level + 1].back();
 	m_freeblocks[level + 1].pop_back();
-	size_t halfPoint = getBlockSizeForLevel(level);
+	size_t halfPoint = GetBlockSizeForLevel(level);
 
 	char* child1 = (char*)parentBlk;
 	char* child2 = child1 + halfPoint;
@@ -99,4 +107,49 @@ void BuddyAllocator::split(int level)
 	//recurssion on level + 1
 	//pop one parent block
 	//add 2 children blocks
+}
+
+void BuddyAllocator::Merge(int level, int offset)
+{
+    int currentLevel = level;
+    int currentOffset = offset;
+
+    while (currentLevel < m_freeblocks.size() - 1)
+    {
+        size_t blockSize = GetBlockSizeForLevel(currentLevel);
+
+        //Compute buddy offset using XOR trick
+        int buddyOffset = currentOffset ^ blockSize;
+        void* buddyPtr = (char*)m_basePtr + buddyOffset;
+
+        bool buddyFree = false;
+        auto& list = m_freeblocks[currentLevel];
+
+        for (int i = 0; i < list.size(); i++)
+        {
+            if (list[i] == buddyPtr)
+            {
+                buddyFree = true;
+                list[i] = list.back();
+                list.pop_back();
+                break;
+            }
+        }
+
+        if (!buddyFree)
+        {
+            //Buddy isnt free stop
+            m_freeblocks[currentLevel].push_back((char*)m_basePtr + currentOffset);
+            return;
+        }
+
+        int parentOffset = std::min(currentOffset, buddyOffset);
+
+        //Next level
+        currentLevel++;
+        currentOffset = parentOffset;
+    }
+
+    //Insert final merged block
+    m_freeblocks[currentLevel].push_back((char*)m_basePtr + currentOffset);
 }
