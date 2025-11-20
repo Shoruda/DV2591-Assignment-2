@@ -22,11 +22,23 @@ void* StompAllocator::allocate(size_t size)
 
 	void* base = VirtualAlloc(nullptr, total_bytes, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 
+	if (!base)
+	{
+		std::cout << "ERROR: Stomp allocation : virtual alloc fail" << std::endl;
+		return nullptr;
+	}
+
+
 	DWORD oldprotect = 0;
-	void* guard = (char*)base + required_pages * (1 + m_pageSize); // allign the guard pointer to the end
-	if (!VirtualProtect(guard, m_pageSize, PAGE_NOACCESS, &oldprotect))
+
+	char* header_page = (char*)base;
+	char* user_ptr = header_page + m_pageSize;
+	void* guard_page = (char*)base + required_pages * m_pageSize; // allign the guard pointer to the end
+
+	if (!VirtualProtect(guard_page, m_pageSize, PAGE_NOACCESS, &oldprotect))
 	{
 		std::cout << "ERROR: Stomp allocation : guard allocation" << std::endl;
+		VirtualFree(base, 0, MEM_RELEASE);
 		return nullptr;
 	}
 
@@ -36,9 +48,8 @@ void* StompAllocator::allocate(size_t size)
 	header->allocated_pages = total_pages;
 	header->requested_size = size;
 	
-	char* usePtr = (char*)base + m_pageSize;
 	
-	return usePtr;
+	return user_ptr;
 }
 
 void StompAllocator::deallocate(void* ptr)
