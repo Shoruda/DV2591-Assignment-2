@@ -106,20 +106,14 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Buddy)
 	{
 		std::cout << "Running test with Buddy allocator\n";
-		BuddyAllocator Buddy(32, 128);
+		BuddyAllocator Buddy(32, 1024);
 
-		void* ptr = Buddy.Allocate(sizeof(T));
-		T obj;
-		obj.data[0] = 67;
-		std::memcpy(ptr, &obj, sizeof(T));
-		Buddy.Deallocate(ptr);
-
-		/*for (int i = 0; i < objectCount; i += 10)
+		for (int i = 0; i < objectCount; i += 10)
 		{
 			void* ptrs[10];
 			for (int j = 0; j < 10; j++)
 			{
-				ptrs[j] = Buddy.allocate(sizeof(T));
+				ptrs[j] = Buddy.Allocate(sizeof(T));
 				if (!ptrs[j]) {
 					std::cout << "Block full!\n";
 					break;
@@ -129,9 +123,9 @@ double runTestAllocation(AllocMode mode, int objectCount){
 				std::memcpy(ptrs[j], &obj, sizeof(T));
 			}
 			for (int j = 0; j < 10; j++) {
-				Buddy.deallocate(ptrs[j]);
+				Buddy.Deallocate(ptrs[j]);
 			}
-		}*/
+		}
 	}
 
 	else if (mode == AllocMode::Stomp)
@@ -151,16 +145,16 @@ int main()
 {
 	const int objectCount = 10000000;
 
-	runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
-
-	/*double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
+	double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
+	double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
     std::cout << "  Pool allocator time: " << poolTime << " ms\n";
-	std::cout << "  Stack allocator time: " << stackTime << " ms\n";*/
+	std::cout << "  Stack allocator time: " << stackTime << " ms\n";
+	std::cout << "  Buddy allocator time: " << buddyTime << " ms\n";
 
     return 0;
 }

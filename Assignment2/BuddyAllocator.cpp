@@ -111,53 +111,45 @@ void BuddyAllocator::Split(int level)
 
 void BuddyAllocator::Merge(int level, int offset)
 {
-	int currentLevel = level;
-	int currentOffset = offset;
-	void* mainptr = (char*)m_basePtr + offset;
+    int currentLevel = level;
+    int currentOffset = offset;
 
-	while (currentLevel < m_freeblocks.size())
-	{
-		int buddyindex = currentOffset / m_minBlockSize;
-		if (buddyindex % 2 == 1)
-		{
-			currentOffset -= GetBlockSizeForLevel(currentLevel);
-		}
-		else if (buddyindex % 2 == 0) //maybe?
-		{
-			currentOffset += GetBlockSizeForLevel(currentLevel);
-		}
+    while (currentLevel < m_freeblocks.size() - 1)
+    {
+        size_t blockSize = GetBlockSizeForLevel(currentLevel);
 
-		void* buddyptr = (char*)m_basePtr + currentOffset;
-		bool freeBuddy = false;
-		for (int i = 0; i < m_freeblocks[currentLevel].size(); i++)
-		{
-			if (m_freeblocks[currentLevel][i] == buddyptr)
-			{
-				freeBuddy = true;
-				m_freeblocks[currentLevel][i] = m_freeblocks[currentLevel].back();
-				m_freeblocks[currentLevel].pop_back();
-			}
-		}
+        //Compute buddy offset using XOR trick
+        int buddyOffset = currentOffset ^ blockSize;
+        void* buddyPtr = (char*)m_basePtr + buddyOffset;
 
-		if (freeBuddy == false)
-		{
-			return;
-		}
+        bool buddyFree = false;
+        auto& list = m_freeblocks[currentLevel];
 
-		//buddy was free
-		if (buddyindex % 2 == 1)
-		{
-			m_freeblocks[currentLevel + 1].push_back(mainptr);
-			currentOffset = (char*)mainptr - (char*)m_basePtr;
-			mainptr = (char*)m_basePtr + currentOffset;
-		}
-		else if (buddyindex % 2 == 0)
-		{
-			m_freeblocks[currentLevel + 1].push_back(buddyptr);
-			currentOffset = (char*)buddyptr - (char*)m_basePtr;
-			mainptr = (char*)m_basePtr + currentOffset;
-		}
+        for (int i = 0; i < list.size(); i++)
+        {
+            if (list[i] == buddyPtr)
+            {
+                buddyFree = true;
+                list[i] = list.back();
+                list.pop_back();
+                break;
+            }
+        }
 
-		currentLevel += 1;
-	}
+        if (!buddyFree)
+        {
+            //Buddy isnt free stop
+            m_freeblocks[currentLevel].push_back((char*)m_basePtr + currentOffset);
+            return;
+        }
+
+        int parentOffset = std::min(currentOffset, buddyOffset);
+
+        //Next level
+        currentLevel++;
+        currentOffset = parentOffset;
+    }
+
+    //Insert final merged block
+    m_freeblocks[currentLevel].push_back((char*)m_basePtr + currentOffset);
 }
