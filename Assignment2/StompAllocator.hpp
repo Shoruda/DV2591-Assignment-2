@@ -1,18 +1,27 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <Windows.h>
 
-class BuddyAllocator
+
+class StompAllocator
 {
 public:
-	BuddyAllocator(size_t minBlockSize, size_t totalSize);
-	~BuddyAllocator();
+	StompAllocator();
+	~StompAllocator();
 
 	void* allocate(size_t size);
 	void deallocate(void* ptr);
+	bool accessViolation(void(*func)());
 
 private:
-	size_t m_minBlockSize;	//Smallest allowed block
-	size_t m_totalSize;		//total size of all blocks
-	void* m_basePtr;		//raw memory block
+	size_t m_pageSize;
+
+	struct AllocationInfo
+	{
+		size_t requested_size;
+		size_t allocated_pages;
+		void* baseAddress;   // The base returned by VirtualAlloc
+	};
+
 };

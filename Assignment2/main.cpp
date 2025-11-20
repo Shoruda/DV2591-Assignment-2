@@ -2,6 +2,7 @@
 #include "PoolAllocator.hpp"
 #include "StackAllocator.hpp"
 #include "BuddyAllocator.hpp"
+#include "StompAllocator.hpp"
 #include <chrono>
 #include <cstdint>
 #include <cstring>
@@ -70,7 +71,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 					break;
 				}
 				T obj;
-				obj.data[0] = 69;
+				obj.data[0] = 69; // futti plus sjunio
 				std::memcpy(ptrs[j], &obj, sizeof(T));
 			}
 			for (int j = 0; j < 10; j++) {
@@ -133,6 +134,8 @@ double runTestAllocation(AllocMode mode, int objectCount){
 		std::cout << "Running test with Stomp allocator\n";
 		//do magic
 		//futti - toe
+
+
 	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
