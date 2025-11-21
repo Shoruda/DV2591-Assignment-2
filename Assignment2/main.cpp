@@ -1,6 +1,4 @@
 #include "Memory.hpp"
-#include "PoolAllocator.hpp"
-#include "StackAllocator.hpp"
 #include "BuddyAllocator.hpp"
 #include "StompAllocator.hpp"
 #include <chrono>
@@ -132,8 +130,6 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Stomp)
 	{
 		std::cout << "Running test with Stomp allocator\n";
-		//do magic
-		//futti - toe
 		InitStomp();
 		for (int i = 0; i < objectCount; i+=10)
 		{
@@ -170,14 +166,14 @@ int main()
 	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
 	double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
-	double StompTime = runTestAllocation<ObjectSmall>(AllocMode::Stomp, objectCount);
+	double stompTime = runTestAllocation<ObjectSmall>(AllocMode::Stomp, objectCount);
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
     std::cout << "  Pool allocator time: " << poolTime << " ms\n";
 	std::cout << "  Stack allocator time: " << stackTime << " ms\n";
 	std::cout << "  Buddy allocator time: " << buddyTime << " ms\n";
-	std::cout << "  Stomp allocator time: " << StompTime << " ms\n";
+	std::cout << "  Stomp allocator time: " << stompTime << " ms\n";
 
     return 0;
 }
