@@ -1,6 +1,5 @@
 #include "Memory.hpp"
 #include "BuddyAllocator.hpp"
-#include "StompAllocator.hpp"
 #include <chrono>
 #include <cstdint>
 #include <cstring>
