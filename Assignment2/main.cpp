@@ -217,21 +217,16 @@ double runTestAllocation(AllocMode mode, int objectCount){
 
 int main()
 {
-	const int objectCount = 10000000;
+	const int objectCount = 100000;
 
 	double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
 	double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
 
-#if defined(_WIN32)
 	double stompTime = runTestAllocation<ObjectSmall>(AllocMode::Stomp, objectCount);
-#elif defined(_linux_)
-	// Linux stomp
-	double stompTime = runTestAllocation<ObjectSmall>(AllocMode::LinuxStomp, objectCount);
-#else
-	std::cout << "unsupported platform\n";
-#endif
+
+
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
