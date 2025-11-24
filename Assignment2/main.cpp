@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
+#include <Windows.h>
 
 
 struct ObjectSmall{
