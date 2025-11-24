@@ -22,7 +22,8 @@ enum class AllocMode {
 	Pool,
 	Stack,
 	Buddy,
-	Stomp
+	Stomp,
+	LinuxStomp
 };
 
 bool accessViolation(const char* name, void(*func)())
@@ -202,6 +203,11 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			}
 		}
 	}
+
+	else if (mode == AllocMode::LinuxStomp)
+	{
+
+	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -217,7 +223,15 @@ int main()
 	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
 	double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
 	double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
+
+#if defined(_WIN32)
 	double stompTime = runTestAllocation<ObjectSmall>(AllocMode::Stomp, objectCount);
+#elif defined(_linux_)
+	// Linux stomp
+	double stompTime = runTestAllocation<ObjectSmall>(AllocMode::LinuxStomp, objectCount);
+#else
+	std::cout << "unsupported platform\n";
+#endif
 
     std::cout << "Summary:\n";
     std::cout << "  OS allocator time:   " << osTime   << " ms\n";
