@@ -11,7 +11,7 @@ public:
 
 	void* allocate(size_t size);
 	void deallocate(void* ptr);
-	bool accessViolation(void(*func)());
+	
 
 private:
 	size_t m_pageSize;

@@ -133,6 +133,7 @@
     <ClCompile Include="PoolAllocator.cpp" />
     <ClCompile Include="StackAllocator.cpp" />
     <ClCompile Include="StompAllocator.cpp" />
+    <ClCompile Include="StompAllocatorLinux.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BuddyAllocator.hpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="PoolAllocator.hpp" />
     <ClInclude Include="StackAllocator.hpp" />
     <ClInclude Include="StompAllocator.hpp" />
+    <ClInclude Include="StompAllocatorLinux.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

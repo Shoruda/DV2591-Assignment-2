@@ -24,6 +24,58 @@ enum class AllocMode {
 	Stomp
 };
 
+bool accessViolation(const char* name, void(*func)())
+{
+	std::cout << "Test: ";
+	std::cout << name;
+	_try{
+		func();
+	}
+	_except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		
+		std::cout << " :Returned an access violation\n";
+		return true;
+	}
+	std::cout << " :Did not return a access violation\n";
+	return false;
+}
+
+void testOverrun()
+{
+	char* ptr =(char*)StompAlloc(40);
+	ptr[4096] = 0xAB;
+	// Should give a write access violation 
+}
+
+void testUnderrun()
+{
+	char* ptr = (char*)StompAlloc(40);
+	ptr[-1] = 0xAB;
+	//Should give a write access violation
+}
+
+void testUseAfterFree() 
+{
+	char* ptr = (char*)StompAlloc(40);
+	StompDeAlloc(ptr);
+
+	ptr[0] = 0xAB;
+	//Should give access violation
+}
+
+
+
+void StompAllocationTests()
+{
+	InitStomp();
+	//accessViolation("Overrun", testOverrun);
+	
+	//accessViolation("Underrun", testUnderrun);
+	accessViolation("Use after free", testUseAfterFree);
+}
+
+
 template <typename T>
 double runTestAllocation(AllocMode mode, int objectCount){
 

@@ -1,6 +1,5 @@
 #include "StompAllocator.hpp"
 
-
 //#define StompDebug
 StompAllocator::StompAllocator()
 {
@@ -46,6 +45,8 @@ void* StompAllocator::allocate(size_t size)
 	std::cout << "required_pages: " << required_pages << "\n";
 	std::cout << "total_pages: " << total_pages << "\n";
 	#endif
+
+	
 	if (!VirtualProtect(guard_page, m_pageSize, PAGE_NOACCESS, &oldprotect))
 	{
 		std::cout << "ERROR: Stomp allocation : guard allocation" << std::endl;
@@ -58,7 +59,14 @@ void* StompAllocator::allocate(size_t size)
 	header->baseAddress = base;
 	header->allocated_pages = total_pages;
 	header->requested_size = size;
-	
+
+	if (!VirtualProtect(header_page, m_pageSize, PAGE_READONLY, &oldprotect))
+	{
+		std::cout << "ERROR: Stomp allocation : protecting header page" << std::endl;
+		VirtualFree(base, 0, MEM_RELEASE);
+		return nullptr;
+	}
+
 	
 	return user_ptr;
 }
@@ -76,20 +84,9 @@ void StompAllocator::deallocate(void* ptr)
 		AllocationInfo* header = (AllocationInfo*)header_page;
 
 		VirtualFree(header->baseAddress, 0, MEM_RELEASE);
+		
 	}
 	
 }
 
-bool StompAllocator::accessViolation(void(*func)())
-{
-	_try{
-		func();
-	}
-	_except(GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION 
-			? EXCEPTION_EXECUTE_HANDLER 
-			: EXCEPTION_CONTINUE_SEARCH)
-	{
-		return true;
-	}
-	return false;
-}
+
