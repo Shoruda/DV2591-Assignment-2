@@ -59,14 +59,6 @@ void testUnderrun()
 	//Should give a write access violation
 }
 
-void testDoubleFree()
-{
-	char* ptr = (char*)StompAlloc(40);
-	StompDeAlloc(ptr);
-	StompDeAlloc(ptr);
-	//should not be able to find ptr, but no access violation
-}
-
 void testUseAfterFree() 
 {
 	char* ptr = (char*)StompAlloc(40);
@@ -84,7 +76,6 @@ void StompAllocationTests()
 	//accessViolation("Overrun", testOverrun);
 	
 	//accessViolation("Underrun", testUnderrun);
-	//accessViolation("Double free", testDoubleFree);
 	accessViolation("Use after free", testUseAfterFree);
 }
 
