@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <Windows.h>
+#include <functional>
 
 
 class StompAllocator
@@ -12,7 +13,7 @@ public:
 
 	void* allocate(size_t size);
 	void deallocate(void* ptr);
-	bool accessViolation(void(*func)());
+	//bool accessViolation(std::function<void()> test);
 
 private:
 	size_t m_pageSize;

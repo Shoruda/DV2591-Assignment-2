@@ -28,6 +28,67 @@ enum class AllocMode {
 	Stomp
 };
 
+bool accessViolation(const char* name, void(*func)())
+{
+	std::cout << "Test: ";
+	std::cout << name;
+	_try{
+		func();
+	}
+	_except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		
+		std::cout << " :Returned an access violation\n";
+		return true;
+	}
+	std::cout << " :Did not return a access violation\n";
+	return false;
+}
+
+void testOverrun()
+{
+	char* ptr =(char*)StompAlloc(40);
+	ptr[4096] = 0xAB;
+	// Should give a write access violation 
+}
+
+void testUnderrun()
+{
+	char* ptr = (char*)StompAlloc(40);
+	ptr[-1] = 0xAB;
+	//Should give a write access violation
+}
+
+void testDoubleFree()
+{
+	char* ptr = (char*)StompAlloc(40);
+	StompDeAlloc(ptr);
+	StompDeAlloc(ptr);
+	//should not be able to find ptr, but no access violation
+}
+
+void testUseAfterFree() 
+{
+	char* ptr = (char*)StompAlloc(40);
+	StompDeAlloc(ptr);
+
+	ptr[0] = 0xAB;
+	
+}
+
+
+
+void StompAllocationTests()
+{
+	InitStomp();
+	//accessViolation("Overrun", testOverrun);
+	
+	//accessViolation("Underrun", testUnderrun);
+	//accessViolation("Double free", testDoubleFree);
+	accessViolation("Use after free", testUseAfterFree);
+}
+
+
 template <typename T>
 double runTestAllocation(AllocMode mode, int objectCount){
 
@@ -166,18 +227,20 @@ int main()
 {
 	const int objectCount = 10000000;
 
-	double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
-	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
-	double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
-	double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
-	double StompTime = runTestAllocation<ObjectSmall>(AllocMode::Stomp, objectCount);
+	//double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
+	//double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
+	//double stackTime = runTestAllocation<ObjectSmall>(AllocMode::Stack, objectCount);
+	//double buddyTime = runTestAllocation<ObjectSmall>(AllocMode::Buddy, objectCount);
+	//double StompTime = runTestAllocation<ObjectSmall>(AllocMode::Stomp, objectCount);
 
-    std::cout << "Summary:\n";
-    std::cout << "  OS allocator time:   " << osTime   << " ms\n";
-    std::cout << "  Pool allocator time: " << poolTime << " ms\n";
-	std::cout << "  Stack allocator time: " << stackTime << " ms\n";
-	std::cout << "  Buddy allocator time: " << buddyTime << " ms\n";
-	std::cout << "  Stomp allocator time: " << StompTime << " ms\n";
+ //   std::cout << "Summary:\n";
+ //   std::cout << "  OS allocator time:   " << osTime   << " ms\n";
+ //   std::cout << "  Pool allocator time: " << poolTime << " ms\n";
+	//std::cout << "  Stack allocator time: " << stackTime << " ms\n";
+	//std::cout << "  Buddy allocator time: " << buddyTime << " ms\n";
+	//std::cout << "  Stomp allocator time: " << StompTime << " ms\n";
+
+	StompAllocationTests();
 
     return 0;
 }
