@@ -16,6 +16,9 @@ struct ObjectMedium{
 struct ObjectBig{
 	std::uint8_t data[512];
 };
+struct ObjectMassive {
+	std::uint8_t data[4096];
+};
 
 enum class AllocMode {
 	OS,
@@ -132,7 +135,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Stack) 
 	{
 		std::cout << "Running test with Stack allocator\n";
-		const int frames = 10;
+		const int frames = 1;
 		const int allocsPerFrame = objectCount / frames;
 		const size_t capacity = sizeof(T) * allocsPerFrame;
 
@@ -156,7 +159,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Buddy)
 	{
 		std::cout << "Running test with Buddy allocator\n";
-		InitBuddy(32, 1024);
+		InitBuddy(sizeof(T), sizeof(T) * 16);
 
 		for (int i = 0; i < objectCount; i += 10)
 		{
@@ -211,7 +214,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 
 int main()
 {
-	const int objectCount = 10000000;
+	const int objectCount = 10000;
 
 	double osTime = runTestAllocation<ObjectSmall>(AllocMode::OS, objectCount);
 	double poolTime = runTestAllocation<ObjectSmall>(AllocMode::Pool, objectCount);
