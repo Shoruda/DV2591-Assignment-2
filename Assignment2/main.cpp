@@ -4,8 +4,9 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
+#ifdef _WIN32
 #include <Windows.h>
-
+#endif
 
 struct ObjectSmall{
 	std::uint8_t data[32];
