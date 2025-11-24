@@ -31,6 +31,7 @@ bool accessViolation(const char* name, void(*func)())
 {
 	std::cout << "Test: ";
 	std::cout << name;
+	#ifdef _WIN32
 	_try{
 		func();
 	}
@@ -40,6 +41,7 @@ bool accessViolation(const char* name, void(*func)())
 		std::cout << " :Returned an access violation\n";
 		return true;
 	}
+	#endif
 	std::cout << " :Did not return a access violation\n";
 	return false;
 }

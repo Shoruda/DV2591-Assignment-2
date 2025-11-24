@@ -1,7 +1,7 @@
 #include "StompAllocator.hpp"
 #ifdef _WIN32
 #include <Windows.h>
-#elif defined(_linux_)
+#elif defined(__linux__)
 #include <unistd.h>
 #include <sys/mman.h>
 #endif
@@ -12,7 +12,7 @@ StompAllocator::StompAllocator()
 	SYSTEM_INFO si;
 	GetSystemInfo(&si);
 	m_pageSize = si.dwPageSize;
-#elif defined(_linux_)
+#elif defined(__linux__)
 	m_pageSize = sysconf(_SC_PAGESIZE);
 
 #endif
@@ -65,7 +65,7 @@ void* StompAllocator::allocate(size_t size)
 		VirtualFree(base, 0, MEM_RELEASE);
 		return nullptr;
 	}
-#elif defined(_linux_)
+#elif defined(__linux__)
 	//allocate
 	void* base = mmap(nullptr, total_bytes,
 		PROT_READ | PROT_WRITE,
@@ -130,7 +130,7 @@ void StompAllocator::deallocate(void* ptr)
 
 	VirtualFree(base, 0, MEM_RELEASE);
 		
-#elif defined(_linux_)
+#elif defined(__linux__)
 	munmap(base, total_bytes);
 #endif
 	
