@@ -65,7 +65,7 @@ void testUseAfterFree()
 	StompDeAlloc(ptr);
 
 	ptr[0] = 0xAB;
-	
+	//Should give access violation
 }
 
 
