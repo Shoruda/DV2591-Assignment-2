@@ -103,14 +103,14 @@ double runTestAllocation(AllocMode mode, int objectCount){
 	else if (mode == AllocMode::Buddy)
 	{
 		std::cout << "Running test with Buddy allocator\n";
-		BuddyAllocator Buddy(32, 1024);
+		InitBuddy(32, 1024);
 
 		for (int i = 0; i < objectCount; i += 10)
 		{
 			void* ptrs[10];
 			for (int j = 0; j < 10; j++)
 			{
-				ptrs[j] = Buddy.Allocate(sizeof(T));
+				ptrs[j] = BuddyAlloc(sizeof(T));
 				if (!ptrs[j]) {
 					std::cout << "Block full!\n";
 					break;
@@ -120,7 +120,7 @@ double runTestAllocation(AllocMode mode, int objectCount){
 				std::memcpy(ptrs[j], &obj, sizeof(T));
 			}
 			for (int j = 0; j < 10; j++) {
-				Buddy.Deallocate(ptrs[j]);
+				BuddyDeAlloc(ptrs[j]);
 			}
 		}
 	}
