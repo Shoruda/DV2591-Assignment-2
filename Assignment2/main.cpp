@@ -4,8 +4,9 @@
 #include <cstring>
 #include <iostream>
 #include <vector>
+#ifdef _WIN32
 #include <Windows.h>
-
+#endif
 
 struct ObjectSmall{
 	std::uint8_t data[64];
@@ -25,13 +26,15 @@ enum class AllocMode {
 	Pool,
 	Stack,
 	Buddy,
-	Stomp
+	Stomp,
+	LinuxStomp
 };
 
 bool accessViolation(const char* name, void(*func)())
 {
 	std::cout << "Test: ";
 	std::cout << name;
+	#ifdef _WIN32
 	_try{
 		func();
 	}
@@ -41,6 +44,7 @@ bool accessViolation(const char* name, void(*func)())
 		std::cout << " :Returned an access violation\n";
 		return true;
 	}
+	#endif
 	std::cout << " :Did not return a access violation\n";
 	return false;
 }
@@ -205,6 +209,11 @@ double runTestAllocation(AllocMode mode, int objectCount){
 			}
 		}
 	}
+
+	else if (mode == AllocMode::LinuxStomp)
+	{
+
+	}
 	
 	auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -242,6 +251,7 @@ void runAllTestsForType(const std::string& name, int objectCount)
 
 int main()
 {
+
 	const int objectCount = 500000;
 
 	runAllTestsForType<ObjectSmall>("ObjectSmall", objectCount);
